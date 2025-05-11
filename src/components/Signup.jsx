@@ -1,74 +1,75 @@
 import { useActionState } from 'react';
 import { isEmail, isNotEmpty, isEqualToOtherValue, hasMinLength } from '../util/validation.js';
 
-export default function Signup() {
-  /**
+/**
    * If we use signupAction in useActionState, we need 2 parameters.
+   * Since we do not have any other states or component specific functionality, we can move this function out of Signup.
    * 
    * @param {*} prevFormState 
    * @param {*} formData 
    * @returns 
    */
-  function signupAction(prevFormState, formData) {
-    const email = formData.get('email');
-    const password = formData.get('password');
-    const confirmPassword = formData.get('confirm-password');
-    const firstName = formData.get('first-name');
-    const lastName = formData.get('last-mame');
-    const role = formData.get('role');
-    const terms = formData.get('terms');
-    const acquisitionChannel = formData.getAll('acquisition'); // gets an array of multiple values
+function signupAction(prevFormState, formData) {
+  const email = formData.get('email');
+  const password = formData.get('password');
+  const confirmPassword = formData.get('confirm-password');
+  const firstName = formData.get('first-name');
+  const lastName = formData.get('last-mame');
+  const role = formData.get('role');
+  const terms = formData.get('terms');
+  const acquisitionChannel = formData.getAll('acquisition'); // gets an array of multiple values
 
-    let errors = [];
+  let errors = [];
 
-    if (!isEmail(email)) {
-      errors.push('Invalid email address.');
-    }
-
-    if (!isNotEmpty(password) || !hasMinLength(password, 6)) {
-      errors.push('You must provide a password with at least 6 characters.');
-    }
-
-    if (!isEqualToOtherValue(password, confirmPassword)) {
-      errors.push('Passwords do not match.');
-    }
-
-    if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
-      errors.push('Please provide both your first and last name.');
-    }
-
-    if (!isNotEmpty(role)) {
-      errors.push('Please select a role.');
-    }
-
-    if (acquisitionChannel.length === 0) {
-      errors.push('Please select at least one acquisition channel.');
-    }
-
-    if (!terms) {
-      errors.push('You must agree to the terms and conditions.')
-    }
-
-    if (errors.length > 0) {
-      // we can return anything
-      return {
-        errors,
-        enteredValues: {
-          email,
-          password,
-          confirmPassword,
-          firstName,
-          lastName,
-          role,
-          acquisitionChannel,
-          terms,
-        }
-      };
-    }
-
-    return { errors: null };
+  if (!isEmail(email)) {
+    errors.push('Invalid email address.');
   }
 
+  if (!isNotEmpty(password) || !hasMinLength(password, 6)) {
+    errors.push('You must provide a password with at least 6 characters.');
+  }
+
+  if (!isEqualToOtherValue(password, confirmPassword)) {
+    errors.push('Passwords do not match.');
+  }
+
+  if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
+    errors.push('Please provide both your first and last name.');
+  }
+
+  if (!isNotEmpty(role)) {
+    errors.push('Please select a role.');
+  }
+
+  if (acquisitionChannel.length === 0) {
+    errors.push('Please select at least one acquisition channel.');
+  }
+
+  if (!terms) {
+    errors.push('You must agree to the terms and conditions.')
+  }
+
+  if (errors.length > 0) {
+    // we can return anything
+    return {
+      errors,
+      enteredValues: {
+        email,
+        password,
+        confirmPassword,
+        firstName,
+        lastName,
+        role,
+        acquisitionChannel,
+        terms,
+      }
+    };
+  }
+
+  return { errors: null };
+}
+
+export default function Signup() {
   /**
    * We call it prefferably after signupAction, because it needs it as an argument.
    * Secord argument is the initial state value (signupAction may have never executed if no submit is done).
