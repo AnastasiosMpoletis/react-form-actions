@@ -75,7 +75,7 @@ export default function Signup() {
    * Secord argument is the initial state value (signupAction may have never executed if no submit is done).
    * 
    * Destructured useActionState return values:
-   *  formData -> return values from signupAction.
+   *  formState -> return values from signupAction.
    *  formAction -> enhanced action by React. Should be set as value to form action attribute.
    *  pending -> returns true or false depending if form is submitted or not.
    */
