@@ -1,7 +1,15 @@
+import { useActionState } from 'react';
 import { isEmail, isNotEmpty, isEqualToOtherValue, hasMinLength } from '../util/validation.js';
 
 export default function Signup() {
-  function signupAction(formData) {
+  /**
+   * If we use signupAction in useActionState, we need 2 parameters.
+   * 
+   * @param {*} prevFormState 
+   * @param {*} formData 
+   * @returns 
+   */
+  function signupAction(prevFormState, formData) {
     const email = formData.get('email');
     const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
@@ -40,16 +48,35 @@ export default function Signup() {
     if (acquisitionChannel.length === 0) {
       errors.push('Please select at least one acquisition channel.');
     }
+
+    if (errors.length > 0) {
+      // we can return anything
+      return { errors };
+    }
+
+    return { errors: null };
   }
+
+  /**
+   * We call it prefferably after signupAction, because it needs it as an argument.
+   * Secord argument is the initial state value (signupAction may have never executed if no submit is done).
+   * 
+   * Destructured useActionState return values:
+   *  formData -> return values from signupAction.
+   *  formAction -> enhanced action by React. Should be set as value to form action attribute.
+   *  pending -> returns true or false depending if form is submitted or not.
+   */
+  const [formState, formAction, pending] = useActionState(signupAction, { errors: null });
 
   return (
     /**
-     * action is a standard attribute in HTML. 
+     * action is a standard attribute in HTML.
+     * AVAILABLE AFTER REACT 19.
      * In React it overrides the default action and we do not need to call event.preventDefault().
      * We automatically get the formData object (don't forget the 'name' attribute).
      * React also automatically resets fields when action is called.
      */
-    <form action={signupAction}>
+    <form action={formAction}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
@@ -133,6 +160,14 @@ export default function Signup() {
           agree to the terms and conditions
         </label>
       </div>
+
+      {formState.errors && (
+        <ul className="error">
+          {formState.errors.map((error) => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
 
       <p className="form-actions">
         <button type="reset" className="button button-flat">
