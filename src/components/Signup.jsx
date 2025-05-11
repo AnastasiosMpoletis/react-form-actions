@@ -1,6 +1,17 @@
 export default function Signup() {
+  function signupAction(formData) {
+    const enteredEmail = formData.get('email');
+    console.log(enteredEmail);
+  }
+
   return (
-    <form>
+    /**
+     * action is a standard attribute in HTML. 
+     * In React it overrides the default action and we do not need to call event.preventDefault().
+     * We automatically get the formData object (don't forget the 'name' attribute).
+     * React also automatically resets fields when action is called.
+     */
+    <form action={signupAction}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
